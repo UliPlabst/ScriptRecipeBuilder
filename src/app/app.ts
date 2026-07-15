@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatFormField, MatHint } from '@angular/material/form-field';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -8,7 +8,15 @@ import { MatToolbar } from '@angular/material/toolbar';
 interface RecipeVariable {
   name: string;
   comment: string | null;
+  fieldType: VariableFieldType;
 }
+
+interface HeaderMetadata {
+  comment: string | null;
+  fieldType: VariableFieldType;
+}
+
+type VariableFieldType = 'input' | 'textarea';
 
 @Component({
   selector: 'app-root',
@@ -18,8 +26,9 @@ interface RecipeVariable {
     MatHint,
     MatIcon,
     MatInput,
-    MatToolbar
-  ],
+    MatToolbar,
+    MatLabel
+],
   templateUrl: './app.html',
   styleUrl: './app.sass'
 })
@@ -30,7 +39,7 @@ export class App {
 
   protected readonly variables = computed<RecipeVariable[]>(() => {
     const recipe = this.recipeText();
-    const comments = this.extractHeaderComments(recipe);
+    const headerMetadata = this.extractHeaderMetadata(recipe);
     const names = new Set<string>();
     const variables: RecipeVariable[] = [];
     const variablePattern = /\$\{([^}]+)\}\$/g;
@@ -43,9 +52,11 @@ export class App {
       }
 
       names.add(name);
+      const metadata = headerMetadata.get(name);
       variables.push({
         name,
-        comment: comments.get(name) ?? null
+        comment: metadata?.comment ?? null,
+        fieldType: metadata?.fieldType ?? 'input'
       });
     }
 
@@ -80,8 +91,8 @@ export class App {
     this.copyButtonLabel.set('Copied');
   }
 
-  private extractHeaderComments(recipe: string): Map<string, string> {
-    const comments = new Map<string, string>();
+  private extractHeaderMetadata(recipe: string): Map<string, HeaderMetadata> {
+    const metadata = new Map<string, HeaderMetadata>();
 
     for (const line of recipe.split(/\r?\n/)) {
       const trimmedLine = line.trim();
@@ -97,10 +108,18 @@ export class App {
         continue;
       }
 
-      comments.set(headerMatch[1].trim(), headerMatch[2].trim());
+      const name = headerMatch[1].trim();
+      const commentWithTags = headerMatch[2].trim();
+      const tags = new Set(commentWithTags.match(/@\w+/g)?.map((tag) => tag.toLowerCase()) ?? []);
+      const comment = commentWithTags.replace(/\s*@\w+/g, '').trim();
+
+      metadata.set(name, {
+        comment: comment || null,
+        fieldType: tags.has('@textarea') ? 'textarea' : 'input'
+      });
     }
 
-    return comments;
+    return metadata;
   }
 
   private readControlValue(event: Event): string {

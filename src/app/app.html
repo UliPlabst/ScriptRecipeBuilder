@@ -9,15 +9,25 @@
 		@if (variables().length > 0) {
 			<form class="variable-form" aria-label="Recipe variables">
 				@for (variable of variables(); track variable.name) {
-					<mat-form-field appearance="outline">
-						<input
-							matInput
-							type="text"
-							[attr.aria-label]="variable.name"
-							[placeholder]="variable.name"
-							[value]="variableValues()[variable.name] ?? ''"
-							(input)="updateVariableValue(variable.name, $event)"
-						>
+					<mat-form-field appearance="outline" [class.variable-field--wide]="variable.fieldType === 'textarea'">
+            <mat-label>{{ variable.name }}</mat-label>
+						@if (variable.fieldType === 'textarea') {
+							<textarea
+								matInput
+								rows="5"
+								[attr.aria-label]="variable.name"
+								[value]="variableValues()[variable.name] ?? ''"
+								(input)="updateVariableValue(variable.name, $event)"
+							></textarea>
+						} @else {
+							<input
+								matInput
+								type="text"
+								[attr.aria-label]="variable.name"
+								[value]="variableValues()[variable.name] ?? ''"
+								(input)="updateVariableValue(variable.name, $event)"
+							>
+						}
 						@if (variable.comment) {
 							<mat-hint>{{ variable.comment }}</mat-hint>
 						}
@@ -27,6 +37,7 @@
 		}
 
 		<mat-form-field class="recipe-field" appearance="outline">
+      <mat-label>Recipe</mat-label>
 			<textarea
 				matInput
 				rows="18"
@@ -48,6 +59,7 @@
 		</div>
 
 		<mat-form-field class="rendered-field" appearance="outline">
+      <mat-label>Output</mat-label>
 			<textarea
 				matInput
 				rows="24"
