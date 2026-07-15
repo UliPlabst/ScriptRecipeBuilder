@@ -4,6 +4,7 @@ import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatToolbar } from '@angular/material/toolbar';
+import { MatTooltip } from '@angular/material/tooltip';
 
 interface RecipeVariable {
   name: string;
@@ -23,6 +24,7 @@ interface HeaderMetadata {
 interface RenderedRecipeSegment {
   text: string;
   replaced: boolean;
+  tooltip: string | null;
 }
 
 type VariableFieldType = 'input' | 'textarea';
@@ -36,7 +38,8 @@ type VariableFieldType = 'input' | 'textarea';
     MatIcon,
     MatInput,
     MatToolbar,
-    MatLabel
+    MatLabel,
+    MatTooltip
 ],
   templateUrl: './app.html',
   styleUrl: './app.sass'
@@ -93,7 +96,8 @@ export class App {
       if (matchIndex > previousIndex) {
         segments.push({
           text: this.recipeText().slice(previousIndex, matchIndex),
-          replaced: false
+          replaced: false,
+          tooltip: null
         });
       }
 
@@ -102,7 +106,8 @@ export class App {
 
       segments.push({
         text: values[name] ?? variable?.defaultValue ?? '',
-        replaced: true
+        replaced: true,
+        tooltip: this.createVariableTooltip(name, variable)
       });
       previousIndex = matchIndex + match[0].length;
     }
@@ -110,7 +115,8 @@ export class App {
     if (previousIndex < this.recipeText().length) {
       segments.push({
         text: this.recipeText().slice(previousIndex),
-        replaced: false
+        replaced: false,
+        tooltip: null
       });
     }
 
@@ -174,6 +180,10 @@ export class App {
     }
 
     return metadata;
+  }
+
+  private createVariableTooltip(name: string, variable: RecipeVariable | undefined): string {
+    return variable?.comment ? `${name}: ${variable.comment}` : name;
   }
 
   private extractMetadataTags(commentWithTags: string): { comment: string; tags: Set<string>; defaultValue: string } {

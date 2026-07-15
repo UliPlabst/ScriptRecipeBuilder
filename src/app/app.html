@@ -69,7 +69,12 @@
 		<div class="rendered-output" aria-label="Rendered text">
 			@if (renderedRecipeSegments().length > 0) {
 				@for (segment of renderedRecipeSegments(); track $index) {
-					<span [class.rendered-output__replacement]="segment.replaced">{{ segment.text }}</span>
+					<span
+						[class.rendered-output__replacement]="segment.replaced"
+						[matTooltip]="segment.tooltip ?? ''"
+						[matTooltipDisabled]="!segment.replaced"
+						matTooltipPosition="above"
+					>{{ segment.text }}</span>
 				}
 			} @else {
 				<span class="rendered-output__placeholder">Rendered text</span>
