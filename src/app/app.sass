@@ -1,0 +1,64 @@
+:host
+	display: block
+	min-height: 100vh
+	background: linear-gradient(135deg, #f7f3e8 0%, #edf6f3 45%, #f8fbff 100%)
+
+.app-header
+	position: sticky
+	top: 0
+	z-index: 1
+	box-shadow: 0 1px 8px rgba(28, 35, 43, 0.14)
+
+.workspace
+	display: grid
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)
+	gap: 24px
+	padding: 24px
+
+.editor-column,
+.preview-column
+	display: flex
+	flex-direction: column
+	gap: 16px
+	min-width: 0
+
+h1,
+h2
+	margin: 0
+	color: #263238
+	font-size: 1.25rem
+	font-weight: 600
+	letter-spacing: 0
+
+.variable-form
+	display: grid
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))
+	gap: 12px
+
+.recipe-field,
+.rendered-field
+	width: 100%
+
+.recipe-field textarea,
+.rendered-field textarea
+	font-family: 'Cascadia Code', 'Fira Code', 'DejaVu Sans Mono', monospace
+	line-height: 1.5
+	resize: vertical
+
+.preview-header
+	display: flex
+	align-items: center
+	justify-content: space-between
+	gap: 16px
+
+.preview-header button
+	flex: 0 0 auto
+
+@media (max-width: 820px)
+	.workspace
+		grid-template-columns: 1fr
+		padding: 16px
+
+	.preview-header
+		align-items: flex-start
+		flex-direction: column

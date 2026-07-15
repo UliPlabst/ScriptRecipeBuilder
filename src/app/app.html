@@ -1,0 +1,61 @@
+<mat-toolbar class="app-header">
+	<span>RecipeBuilder</span>
+</mat-toolbar>
+
+<main class="workspace">
+	<section class="editor-column" aria-labelledby="recipe-input-heading">
+		<h1 id="recipe-input-heading">Recipe</h1>
+
+		@if (variables().length > 0) {
+			<form class="variable-form" aria-label="Recipe variables">
+				@for (variable of variables(); track variable.name) {
+					<mat-form-field appearance="outline">
+						<input
+							matInput
+							type="text"
+							[attr.aria-label]="variable.name"
+							[placeholder]="variable.name"
+							[value]="variableValues()[variable.name] ?? ''"
+							(input)="updateVariableValue(variable.name, $event)"
+						>
+						@if (variable.comment) {
+							<mat-hint>{{ variable.comment }}</mat-hint>
+						}
+					</mat-form-field>
+				}
+			</form>
+		}
+
+		<mat-form-field class="recipe-field" appearance="outline">
+			<textarea
+				matInput
+				rows="18"
+				aria-label="Script recipe"
+				placeholder="Paste a script recipe here"
+				[value]="recipeText()"
+				(input)="updateRecipe($event)"
+			></textarea>
+		</mat-form-field>
+	</section>
+
+	<section class="preview-column" aria-labelledby="rendered-recipe-heading">
+		<div class="preview-header">
+			<h2 id="rendered-recipe-heading">Rendered Recipe</h2>
+			<button mat-flat-button type="button" (click)="copyRenderedRecipe()">
+				<mat-icon aria-hidden="true">content_copy</mat-icon>
+				{{ copyButtonLabel() }}
+			</button>
+		</div>
+
+		<mat-form-field class="rendered-field" appearance="outline">
+			<textarea
+				matInput
+				rows="24"
+				readonly
+				aria-label="Rendered text"
+				placeholder="Rendered text"
+				[value]="renderedRecipe()"
+			></textarea>
+		</mat-form-field>
+	</section>
+</main>
