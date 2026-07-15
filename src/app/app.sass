@@ -39,15 +39,36 @@ h2
   grid-column: 1 / -1
 
 .recipe-field,
-.rendered-field
+.rendered-output
   width: 100%
 
 .variable-form textarea,
 .recipe-field textarea,
-.rendered-field textarea
+.rendered-output
   font-family: 'Cascadia Code', 'Fira Code', 'DejaVu Sans Mono', monospace
   line-height: 1.5
+
+.recipe-field textarea
   resize: vertical
+
+.rendered-output
+  box-sizing: border-box
+  min-height: 578px
+  padding: 16px
+  border: 1px solid #74777f
+  border-radius: 4px
+  background: rgba(255, 255, 255, 0.72)
+  color: #1b1b1f
+  overflow: auto
+  white-space: pre-wrap
+
+.rendered-output__replacement
+  border-radius: 3px
+  background: #fff1a8
+  box-shadow: 0 0 0 2px #fff1a8
+
+.rendered-output__placeholder
+  color: #6f7278
 
 .preview-header
   display: flex
@@ -57,6 +78,12 @@ h2
 
 .preview-header button
   flex: 0 0 auto
+
+.missing-variable-error
+  margin: 0
+  color: #ba1a1a
+  font-size: 0.875rem
+  font-weight: 500
 
 @media (max-width: 820px)
   .workspace

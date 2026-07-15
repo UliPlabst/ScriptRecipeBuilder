@@ -16,7 +16,8 @@
 								matInput
 								rows="5"
 								[attr.aria-label]="variable.name"
-								[value]="variableValues()[variable.name] ?? ''"
+								[required]="variable.required"
+								[value]="variableValues()[variable.name] ?? variable.defaultValue"
 								(input)="updateVariableValue(variable.name, $event)"
 							></textarea>
 						} @else {
@@ -24,7 +25,8 @@
 								matInput
 								type="text"
 								[attr.aria-label]="variable.name"
-								[value]="variableValues()[variable.name] ?? ''"
+								[required]="variable.required"
+								[value]="variableValues()[variable.name] ?? variable.defaultValue"
 								(input)="updateVariableValue(variable.name, $event)"
 							>
 						}
@@ -58,16 +60,20 @@
 			</button>
 		</div>
 
-		<mat-form-field class="rendered-field" appearance="outline">
-      <mat-label>Output</mat-label>
-			<textarea
-				matInput
-				rows="24"
-				readonly
-				aria-label="Rendered text"
-				placeholder="Rendered text"
-				[value]="renderedRecipe()"
-			></textarea>
-		</mat-form-field>
+		@if (missingRequiredVariables().length > 0) {
+			<p class="missing-variable-error" role="alert">
+				Missing required variables: {{ missingRequiredVariables().join(', ') }}
+			</p>
+		}
+
+		<div class="rendered-output" aria-label="Rendered text">
+			@if (renderedRecipeSegments().length > 0) {
+				@for (segment of renderedRecipeSegments(); track $index) {
+					<span [class.rendered-output__replacement]="segment.replaced">{{ segment.text }}</span>
+				}
+			} @else {
+				<span class="rendered-output__placeholder">Rendered text</span>
+			}
+		</div>
 	</section>
 </main>
