@@ -17,7 +17,8 @@
 								rows="5"
 								[attr.aria-label]="variable.name"
 								[required]="variable.required"
-								[value]="variableValues()[variable.name] ?? variable.defaultValue"
+                [placeholder]="variable.defaultValue"
+								[value]="variableValues()[variable.name] ?? ''"
 								(input)="updateVariableValue(variable.name, $event)"
 							></textarea>
 						} @else {
@@ -26,7 +27,8 @@
 								type="text"
 								[attr.aria-label]="variable.name"
 								[required]="variable.required"
-								[value]="variableValues()[variable.name] ?? variable.defaultValue"
+                [placeholder]="variable.defaultValue"
+								[value]="variableValues()[variable.name] ?? ''"
 								(input)="updateVariableValue(variable.name, $event)"
 							>
 						}

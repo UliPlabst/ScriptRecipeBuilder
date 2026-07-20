@@ -105,7 +105,7 @@ export class App {
       const variable = variablesByName.get(name);
 
       segments.push({
-        text: values[name] ?? variable?.defaultValue ?? '',
+        text: this.getEffectiveVariableValue(values[name], variable),
         replaced: true,
         tooltip: this.createVariableTooltip(name, variable)
       });
@@ -127,7 +127,7 @@ export class App {
     const values = this.variableValues();
 
     return this.variables()
-      .filter((variable) => variable.required && !(values[variable.name] ?? variable.defaultValue).trim())
+      .filter((variable) => variable.required && !this.getEffectiveVariableValue(values[variable.name], variable).trim())
       .map((variable) => variable.name);
   });
 
@@ -184,6 +184,10 @@ export class App {
 
   private createVariableTooltip(name: string, variable: RecipeVariable | undefined): string {
     return variable?.comment ? `${name}: ${variable.comment}` : name;
+  }
+
+  private getEffectiveVariableValue(value: string | undefined, variable: RecipeVariable | undefined): string {
+    return value === undefined || value === '' ? variable?.defaultValue ?? '' : value;
   }
 
   private extractMetadataTags(commentWithTags: string): { comment: string; tags: Set<string>; defaultValue: string } {
